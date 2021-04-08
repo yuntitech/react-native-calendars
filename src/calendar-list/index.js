@@ -56,7 +56,9 @@ class CalendarList extends Component {
     /** How far from the end to trigger the onEndReached callback */
     onEndReachedThreshold: PropTypes.number,
     /** Called once when the scroll position gets within onEndReachedThreshold */
-    onEndReached: PropTypes.func
+    onEndReached: PropTypes.func,
+    // FlatList Key
+    flatListKey: PropTypes.number,
   };
 
   static defaultProps = {
@@ -69,7 +71,8 @@ class CalendarList extends Component {
     scrollsToTop: false,
     scrollEnabled: true,
     removeClippedSubviews: Platform.OS === 'android',
-    keyExtractor: (item, index) => String(index)
+    keyExtractor: (item, index) => String(index),
+    flatListKey: 1
   };
 
   constructor(props) {
@@ -169,12 +172,12 @@ class CalendarList extends Component {
 
   getItemLayout = (data, index) => {
     const {horizontal, calendarHeight, calendarWidth} = this.props;
-
-    return {
+    const layout = {
       length: horizontal ? calendarWidth : calendarHeight,
       offset: (horizontal ? calendarWidth : calendarHeight) * index,
       index
     };
+    return layout;
   };
 
   getMonthIndex(month) {
@@ -282,10 +285,10 @@ class CalendarList extends Component {
 
   render() {
     const {style, pastScrollRange, futureScrollRange, horizontal, showScrollIndicator, testID} = this.props;
-
     return (
       <View>
         <FlatList
+          key={this.props.flatListKey}
           ref={c => (this.listView = c)}
           style={[this.style.container, style]}
           initialListSize={pastScrollRange + futureScrollRange + 1} // ListView deprecated
@@ -308,6 +311,7 @@ class CalendarList extends Component {
           keyExtractor={this.props.keyExtractor}
           onEndReachedThreshold={this.props.onEndReachedThreshold}
           onEndReached={this.props.onEndReached}
+          extraData={this.props.calendarWidth}
         />
         {this.renderStaticHeader()}
       </View>
