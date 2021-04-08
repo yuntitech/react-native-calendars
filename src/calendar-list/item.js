@@ -30,8 +30,11 @@ class CalendarListItem extends Component {
   shouldComponentUpdate(nextProps) {
     const r1 = this.props.item;
     const r2 = nextProps.item;
-
-    return r1.toString('yyyy MM') !== r2.toString('yyyy MM') || !!(r2.propbump && r2.propbump !== r1.propbump);
+    if (r1 != null && r2 != null) {
+      return r1.toString('yyyy MM') !== r2.toString('yyyy MM') || !!(r2.propbump && r2.propbump !== r1.propbump);
+    }  else {
+      return true;
+    }
   }
 
   onPressArrowLeft = (_, month) => {
@@ -79,7 +82,7 @@ class CalendarListItem extends Component {
     } = this.props;
     const calendarProps = extractComponentProps(Calendar, this.props);
 
-    if (item.getTime) {
+    if (item && item.getTime) {
       return (
         <Calendar
           {...calendarProps}
@@ -93,12 +96,12 @@ class CalendarListItem extends Component {
         />
       );
     } else {
-      const text = item.toString();
+      // const text = item.toString();
 
       return (
         <View style={[{height: calendarHeight, width: calendarWidth}, this.style.placeholder]}>
           <Text allowFontScaling={false} style={this.style.placeholderText}>
-            {text}
+            {/* {text} */}
           </Text>
         </View>
       );

@@ -59,6 +59,7 @@ class CalendarList extends Component {
     onEndReached: PropTypes.func,
     // FlatList Key
     flatListKey: PropTypes.number,
+    openDateFromOutside: PropTypes.any,
   };
 
   static defaultProps = {
@@ -297,7 +298,7 @@ class CalendarList extends Component {
           getItemLayout={this.getItemLayout}
           onViewableItemsChanged={this.onViewableItemsChanged}
           viewabilityConfig={this.viewabilityConfig}
-          initialScrollIndex={this.state.openDate ? this.getMonthIndex(this.state.openDate) : false}
+          initialScrollIndex={this.props.openDateFromOutside ? this.getMonthIndex(parseDate(this.props.openDateFromOutside)) : false}
           showsVerticalScrollIndicator={showScrollIndicator}
           showsHorizontalScrollIndicator={horizontal && showScrollIndicator}
           testID={testID}
