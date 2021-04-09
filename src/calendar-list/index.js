@@ -1,16 +1,16 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { Dimensions, FlatList, Platform, View } from 'react-native';
 import XDate from 'xdate';
-import React, {Component} from 'react';
-import {FlatList, Platform, Dimensions, View} from 'react-native';
-import {extractComponentProps} from '../component-updater';
-import {xdateToData, parseDate} from '../interface';
-import dateutils from '../dateutils';
-import {STATIC_HEADER} from '../testIDs';
-import styleConstructor from './style';
 import Calendar from '../calendar';
-import CalendarListItem from './item';
 import CalendarHeader from '../calendar/header/index';
+import { extractComponentProps } from '../component-updater';
+import dateutils from '../dateutils';
+import { parseDate, xdateToData } from '../interface';
+import { STATIC_HEADER } from '../testIDs';
+import CalendarListItem from './item';
+import styleConstructor from './style';
 
 const {width} = Dimensions.get('window');
 
@@ -213,6 +213,14 @@ class CalendarList extends Component {
   }
 
   onViewableItemsChanged = ({viewableItems}) => {
+    // 过滤掉 [{"index": 35, "isViewable": true, "item": "一月 2020", "key": "35"}] 这种情况
+    if (viewableItems.length === 1) {
+      const viewableItem = viewableItems[0];
+      if (viewableItem.item != null && typeof(viewableItem.item)=='string' && viewableItem.item.indexOf(" ") !== -1) {
+        return;
+      }
+    }
+
     function rowIsCloseToViewable(index, distance) {
       for (let i = 0; i < viewableItems.length; i++) {
         if (Math.abs(index - parseInt(viewableItems[i].index)) <= distance) {
