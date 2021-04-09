@@ -216,8 +216,34 @@ class CalendarList extends Component {
     // 过滤掉 [{"index": 35, "isViewable": true, "item": "一月 2020", "key": "35"}] 这种情况
     if (viewableItems.length === 1) {
       const viewableItem = viewableItems[0];
-      if (viewableItem.item != null && typeof(viewableItem.item)=='string' && viewableItem.item.indexOf(" ") !== -1) {
-        return;
+      if (viewableItem.item != null && typeof(viewableItem.item)=='string' && viewableItem.item.indexOf(' ') !== -1) {
+        // 判断 viewableItem.item 与 openDateFromOutside 是否相同，如果不相同，则直接 return
+        const spaceIndex = viewableItem.item.indexOf(' ');
+        const itemMonthStr = viewableItem.item.slice(0, spaceIndex).trim();
+        const itemYear = viewableItem.item.slice(spaceIndex, viewableItem.item.length).trim();
+
+        const MonthInChinese = ['一月',
+        '二月',
+        '三月',
+        '四月',
+        '五月',
+        '六月',
+        '七月',
+        '八月',
+        '九月',
+        '十月',
+        '十一月',
+        '十二月'];
+
+        // 解析出月份是多少
+        const itemMonth = MonthInChinese.indexOf(itemMonthStr) + 1;
+        const { openDateFromOutside } = this.props;
+        const targetYear = parseInt(openDateFromOutside.substr(0, 4));
+        const targetMonth = parseInt(openDateFromOutside.substr(5, 2));
+
+        if (!(targetYear === parseInt(itemYear) && targetMonth === itemMonth)) {
+          return;
+        }
       }
     }
 
