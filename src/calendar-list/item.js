@@ -101,7 +101,7 @@ class CalendarListItem extends Component {
       return (
         <View style={[{height: calendarHeight, width: calendarWidth}, this.style.placeholder]}>
           <Text allowFontScaling={false} style={this.style.placeholderText}>
-            {/* {text} */}
+            {item && item.toString()}
           </Text>
         </View>
       );

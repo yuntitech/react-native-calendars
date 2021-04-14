@@ -167,7 +167,6 @@ class CalendarList extends Component {
     let diffMonths = Math.round(this.state.openDate.clone().setDate(1).diffMonths(scrollTo.clone().setDate(1)));
     const size = horizontal ? calendarWidth : calendarHeight;
     const scrollAmount = size * pastScrollRange + diffMonths * size;
-
     this.listView.scrollToOffset({offset: scrollAmount, animated: false});
   };
 
@@ -216,6 +215,12 @@ class CalendarList extends Component {
     // 过滤掉 [{"index": 35, "isViewable": true, "item": "一月 2020", "key": "35"}] 这种情况
     if (viewableItems.length === 1) {
       const viewableItem = viewableItems[0];
+      
+      if (viewableItem.item == null) {  
+        this.scrollToMonth(this.props.current);
+        return;
+      }
+
       if (viewableItem.item != null && typeof(viewableItem.item)=='string' && viewableItem.item.indexOf(' ') !== -1) {
         // 判断 viewableItem.item 与 openDateFromOutside 是否相同，如果不相同，则直接 return
         const spaceIndex = viewableItem.item.indexOf(' ');
@@ -263,7 +268,6 @@ class CalendarList extends Component {
     for (let i = 0; i < rowclone.length; i++) {
       let val = rowclone[i];
       const rowShouldBeRendered = rowIsCloseToViewable(i, 1);
-
       if (rowShouldBeRendered && !rowclone[i].getTime) {
         val = this.state.openDate.clone().addMonths(i - this.props.pastScrollRange, true);
       } else if (!rowShouldBeRendered) {
@@ -274,7 +278,6 @@ class CalendarList extends Component {
         visibleMonths.push(xdateToData(val));
       }
     }
-
     _.invoke(this.props, 'onVisibleMonthsChange', visibleMonths);
 
     this.setState({
